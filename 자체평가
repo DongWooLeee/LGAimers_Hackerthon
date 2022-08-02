@@ -1,0 +1,18 @@
+#Validationset 떼어내기
+
+from sklearn.model_selection import train_test_split
+x_train, x_val, y_train, y_val = train_test_split(train_x, train_y, 
+test_size=0.2, random_state=42)
+
+from sklearn.metrics import mean_squared_error
+def nrmse(gt, preds): #gt는 실제 데이터값(여기선 y_val, preds는 모델.predict(x_val)) 한 estimator
+    # 각 Y Feature별 NRMSE 총합
+    # Y_01 ~ Y_08 까지 20% 가중치 부여
+    all_nrmse = []
+    for idx in range(0,13): # ignore 'ID'
+        rmse = mean_squared_error(np.array(gt)[:,idx], preds[:,idx], squared=False)
+        nrmse = rmse/np.mean(np.abs(np.array(gt)[:,idx]))
+        all_nrmse.append(nrmse)
+    score = 1.2 * np.sum(all_nrmse[:8]) + 1.0 * np.sum(all_nrmse[8:15])
+    return score
+    
